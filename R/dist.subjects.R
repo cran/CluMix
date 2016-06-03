@@ -1,8 +1,11 @@
 dist.subjects <-
-function(data){
+function(data, weights){
 #function(data, type=list()){
 # !! to be done: allow also asymmetric binary variables
   
+  # variable classes (binary can be any of numeric, factor, ordered, logic)
+  #dc <- sapply(data, function(x) ifelse(length(na.omit(unique(x))) == 2, "binary", data.class)
+
   # if all variables are numeric, use Euclidean distance
   dc <- sapply(data, data.class)
   if(all(dc == "numeric"))
@@ -16,8 +19,12 @@ function(data){
     K <- sapply(data[,dc == "factor", drop=FALSE], function(x) length(levels(x)))
     bin <- names(K)[K == 2]
     data[,bin] <- sapply(data[,bin], function(x) as.numeric(x) - 1)
+    
+    # in case there are logical variables
+    if(any(dc == "logical"))
+      data[,dc == "logical"] <- sapply(data[,dc == "logical"], as.numeric)
   
-    D <- FD::gowdis(x=data, ord="metric") # asym.bin=!!
+    D <- FD::gowdis(x=data, w=weights, ord="metric") # asym.bin=!!
   }
   return(D)
 }

@@ -5,14 +5,14 @@
 \description{Produces a heatmap visualizing all samples and variables of a dataset. Both samples and variables are clustered using methods suitable for mixed-type data. Different types of variables are indicated by different color schemes.}
 
 \usage{
-mix.heatmap(data, D.subjects, D.variables, dend.subjects, dend.variables, 
+mix.heatmap(data, D.subjects, D.variables, dend.subjects, dend.variables, varweights,
 dist.variables.method = c("associationMeasures", "ClustOfVar"), 
 associationFun = association, rowlab, rowmar = 3, lab.cex = 1.5, 
 ColSideColors, RowSideColors, 
-col.cont = marray::maPalette(low = "blue", mid = "lightgrey", high = "red", k = 50), 
+col.cont = marray::maPalette(low = "lightblue", high = "darkblue", k = 50), 
 col.ord = list(low = "lightgreen", high = "darkgreen"), 
-col.cat = c("darkorange", "darkred", "thistle", "cornflowerblue", "olivedrab", 
-"darkgrey", "purple4", "indianred", "yellow2", "darkseagreen4"), 
+col.cat = c("indianred1","darkred","orangered","orange","palevioletred1",
+          "violetred4","red3","indianred4"), 
 legend.colbar, legend.rowbar, legend.mat = FALSE, legend.cex = 1)
 }
 
@@ -22,6 +22,7 @@ legend.colbar, legend.rowbar, legend.mat = FALSE, legend.cex = 1)
   \item{D.variables}{A previously calculated distance matrix (of class \code{dissimilarity} for variables can be given. If missing, it is calculated by \code{\link{dist.variables}}. If set to \code{NULL}, no clustering is done and original order in \code{data} will be preserved.}
   \item{dend.subjects}{A \code{dendrogram} for subjects can be given; then no distances between subjects will be calculated and \code{D.subjects} will be ignored.}
   \item{dend.variables}{A \code{dendrogram} for variables can be given; then no distances between variables will be calculated and \code{D.variables} will be ignored.}
+  \item{varweights}{optional vector of variable weights, used for calculating Gower's distances between subjects}
   \item{dist.variables.method}{If \code{"associationMeasures"}, similarities between variables are assessed by combination of appropriate measures of association for different pairs of data types. Then a dendrogram is derived by standard hierarchical clustering (\code{\link[stats]{hclust}} with default options). If \code{"ClustOfVar"}, variables are clustered by the \code{\link{ClustOfVar}{ClustOfVar}} approach.}
   \item{associationFun}{By default, appropriate association measures are chosen for each pair of variables, see \code{\link{association}} for details. But the user can also define a function that for any two variables calculates a similarity measure. Ignored if \code{dist.variables.method = "ClustOfVar"}}
   \item{rowlab}{row (variable) labels; if missing, column names of \code{data} are used}
@@ -61,11 +62,15 @@ data(mixdata)
 
 mix.heatmap(mixdata, rowmar=7, legend.mat=TRUE)
 
-# with (random) color bars 
+## with (random) color bars 
 colbar <- rep(5:7, nrow(mixdata))
 rowbar <- rep(c("darkorange","grey"), ncol(mixdata))
 mix.heatmap(mixdata, ColSideColors=colbar, RowSideColors=rowbar, 
 legend.colbar=c("1","2","3"), legend.rowbar=c("a","b"), rowmar=7)
+
+## example with variable weights
+w <- rep(1:2, each=5)
+mix.heatmap(mixdata, varweights=w, rowmar=7)
 }
 
 \keyword{ hplot }

@@ -5,7 +5,8 @@
 \description{Plots similarities of all variables to an outcome variable against similarities of all variables to a predictor of interest}
 
 \usage{
-confounderPlot(data, S, x, y, labels, returnS = FALSE, ...)
+confounderPlot(data, S, x, y, labels, returnS = FALSE, plotLegend = TRUE, col, 
+pch, font, xlim, ylim, ...)
 }
 
 \arguments{
@@ -15,6 +16,11 @@ confounderPlot(data, S, x, y, labels, returnS = FALSE, ...)
   \item{y}{name of the outcome variable (as used in \code{data} and \code{S})}
   \item{labels}{variable names used for plotting; have to be in corresponding order with columns of \code{data}; if missing, names of \code{data} are used}
   \item{returnS}{shall similarity matrix be returned?}
+  \item{plotLegend}{shall (default) legend be shown, indicating categorical and continuous variables}
+  \item{col}{symbol and label color; by default categorical variables are shown in purple, continuous variables in black}
+  \item{pch}{plotting symbol, default 16}
+  \item{font}{font of plotted labels; by default names of variables \code{x} and \code{y} are shown in bold}
+  \item{xlim, ylim}{axis limits}
   \item{\dots}{graphical parameters passed to \code{plot}}
 }
 

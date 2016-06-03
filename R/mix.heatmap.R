@@ -2,17 +2,20 @@ mix.heatmap <-
 #function(data, D.subjects, D.variables, dend.subjects, dend.variables, type=list(), 
 # !! to be done: allow also asymmetric binary variables
 function(data, D.subjects, D.variables, dend.subjects, dend.variables,  
+                        varweights,
                         dist.variables.method=c("associationMeasures","ClustOfVar"), associationFun=association,
                         rowlab, rowmar=3, lab.cex=1.5, ColSideColors, RowSideColors,
-                        col.cont=marray::maPalette(low="blue", mid="lightgrey", high="red", k=50),
+                        col.cont=marray::maPalette(low="lightblue", high="darkblue", k=50),
                         col.ord=list(low="lightgreen", high="darkgreen"),
-                        col.cat=c("darkorange","darkred","thistle","cornflowerblue","olivedrab","darkgrey","purple4","indianred","yellow2","darkseagreen4"),
+                        col.cat=c("indianred1","darkred","orangered","orange","palevioletred1","violetred4","red3","indianred4"),
+                        #col.cat=c("darkorange","darkred","thistle","cornflowerblue","olivedrab","darkgrey","purple4","indianred","yellow2","darkseagreen4"),
                         legend.colbar, legend.rowbar, legend.mat=FALSE, legend.cex=1){
 # data: data frame where columns are variables (of different data types) and rows are observations (subjects, samples)
 # D.subjects, D.variables: the already calculated distance matrices (class 'dissimilarity') for subjects and variables can be given; 
   # if missing, they will be calculated; if set to NULL, no clustering is done and original order in 'data' will be preserved
 # dend.subjects, dend.variables: dendrograms for subects and variables can be given;
   # then no distances will be calculated and also D.subjects/D.variables will be ignored
+# varweights: optional vector of variable weights, used for calculating Gower distances btw. subjects
 # dist.variables.method: distance can be based on 1-sqrt(associationmeasures) or ClustOfVar approach
 # associationFun: function calculating association coefficients between variables (only used when dist.variables.method="associationMeasures")
 # rowlab: variable labels; if missing, colnames of data are used
@@ -44,7 +47,7 @@ function(data, D.subjects, D.variables, dend.subjects, dend.variables,
 
   # if neither dendrogram nor dist matrix is given, calculate distance matrix for subjects 
   else if(missing(D.subjects)){
-    D.subjects <- dist.subjects(data)
+    D.subjects <- dist.subjects(data, weights=varweights)
     #D.subjects <- dist.subjects(data, type=type)
     dend.subjects <- as.dendrogram(hclust(D.subjects))
     o.subjects <- labels(dend.subjects)
@@ -192,13 +195,16 @@ function(data, D.subjects, D.variables, dend.subjects, dend.variables,
   # row (=variable) labels
   if(missing(rowlab))
     rowlab <- names(data.plot)
-  else
+  else{
+    names(rowlab) <- names(data)
     rowlab <- rowlab[rev(o.variables)]
+  }
   
   # heatmap
   for(i in 1:p){
     v.i <- data.plot[,i]
-    dc <- data.class(v.i)
+    dc <- ifelse(length(na.omit(unique(v.i))) == 2, "binary", data.class(v.i))
+    #dc <- data.class(v.i)
     N <- rowlab[i]
     par(mar=c(0, 1, 0, rowmar))
     

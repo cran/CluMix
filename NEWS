@@ -1,0 +1,28 @@
+CHANGES IN VERSION 1.1
+----------------------
+
+o Added options 'weights' or 'varweights' to 'dist.subjects', 'similarity.subjects', 'dendro.subjects', 'distmap' and 'mix.heatmap' to allow for variable weights in the calculation of Gower's distances between subjects
+
+
+CHANGES IN VERSION 1.0
+----------------------
+
+o Added package vignette
+
+o Added function 'similarity.subjects'
+
+
+CHANGES IN VERSION 0.5
+----------------------
+
+o Changed default coloring
+
+o Binary variables that are logical or numeric are now recognized as binary
+
+
+CHANGES IN VERSION 0.4
+----------------------
+
+o Reordering the dendrogram for 'distmap' is now possible via the new option 'reorderdend'. It works in the same way as the 'wts' option in the reorder.dendrogram function from the stats package
+
+o The 'confounderPlot' is now more flexible w.r.t. xlim, ylim, plotting color, symbol and font.

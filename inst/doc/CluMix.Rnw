@@ -1,0 +1,203 @@
+% \VignetteIndexEntry{CluMix}
+% \VignetteDepends{CluMix}
+% \VignetteKeywords{Visualization}
+% \VignettePackage{CluMix}
+
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\Rclass}[1]{{\textit{#1}}}
+\newcommand{\Rfunarg}[1]{{\textit{#1}}}
+\newcommand{\Rcode}[1]{{\texttt{#1}}}
+
+\documentclass[a4paper]{article}
+
+\usepackage{Sweave}
+\usepackage{hyperref}
+
+\title{CluMix: Clustering and Visualization of Mixed-Type Data}
+
+\author{Manuela Hummel \and Annette Kopp-Schneider}
+\date{\today}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+\maketitle \tableofcontents %\newpage
+
+\section{Introduction}
+
+In real data situations various factors of interest are measured on different scales, e.g. quantitative gene expression values and categorical clinical features like gender, disease stage etc. In many cases (pre-selected) gene expression data are visualized in heatmaps, while further patient characteristics are only added "informatively" on top. This can be visually quite confusing in case there are more than just a few such additional features. Also, it might be of interest to include clinical information in the process of clustering patients. Further, by standard heatmaps relationships between the quantitative features used for clustering and the information added on top are not explored explicitely. 
+This package offers an integrative heatmap for data of mixed types to overcome those limitations of classical heatmaps. 
+
+In order to create a heatmap for variables measured on different scales, special similarity measures are necessary defining i) distances between subjects (e.g. patients) based on features of different types, and ii) distances between the different variables. Similarities between subjects are measured by Gower's general similarity coefficient \cite{Gower1971} 
+with an extension of Podani \cite{Podani1999} 
+for ordinal variables. Similarities between variables are assessed by combination of appropriate measures of association for different pairs of data types \cite{Hummel2016}. Then standard hierarchical clustering with complete linkage is applied.
+Alternatively, variables can also be clustered by the 'ClustOfVar' approach \cite{Chavent2012}.
+%\cite{Goe:04}
+%------------------------------------------------------------------------------------------------
+
+\section{Mixed-Data Heatmap}
+
+We use a small simulated example dataset with quantitative, ordinal and categorical variables, that is included in the package for illustration.
+
+<<data>>=
+library(CluMix)
+data(mixdata)
+str(mixdata)
+@
+
+The mixed-data heatmap with subjects in the columns and variables in the rows is created by the \Rfunction{mix.heatmap} function (see Figure \ref{heat1}). Some options are available to manipulate labels, colors and legend. Note that in the current implementation the heatmap is limited to 200 variables. \\
+
+\noindent
+\Rcode{> mix.heatmap(mixdata, rowmar=7, legend.mat=TRUE)}
+
+\begin{figure}[htb!]
+\begin{center}
+<<heat1, fig=TRUE, width=8, height=5, echo=F>>=
+mix.heatmap(mixdata, rowmar=7, legend.mat=TRUE)
+@
+\vspace{-0.4cm}
+\caption{{\small \label{heat1} Mixed-data heatmap using Gower's distances for clustering subjects (columns) and combination of association measures (CluMix approach) for clustering variables (rows).}}
+\end{center}
+\end{figure}
+
+For clustering subjects, variable weights can be provided to give more importance to certain variables in the calculation of Gower's distances (see Figure \ref{heatw}).
+
+\noindent
+\Rcode{> w <- rep(1:2, each=5)}
+\noindent
+\Rcode{> mix.heatmap(mixdata, varweights=w, rowmar=7)}
+
+\begin{figure}[htb!]
+\begin{center}
+<<heat1, fig=TRUE, width=8, height=5, echo=F>>=
+w <- rep(1:2, each=5)
+mix.heatmap(mixdata, varweights=w, rowmar=7)
+@
+\vspace{-0.4cm}
+\caption{{\small \label{heatw} Mixed-data heatmap using weighted Gower's distances for clustering subjects (columns) and combination of association measures (CluMix approach) for clustering variables (rows).}}
+\end{center}
+\end{figure}
+
+To choose the 'ClustOfVar' approach for clustering variables (see Figure \ref{Clustofvar}) instead of the default approach using a combination of different association measures, you can specify \Rfunarg{dist.variables.method = "ClustOfVar"}.\\
+
+\noindent
+\Rcode{> mix.heatmap(mixdata, dist.variables.method="ClustOfVar", rowmar=7)}
+\\
+
+\begin{figure}[htb!]
+\begin{center}
+<<heat2, fig=TRUE, echo=F, width=10, height=6>>=
+mix.heatmap(mixdata, dist.variables.method="ClustOfVar", rowmar=7)
+@
+\vspace{-0.4cm}
+\caption{{\small \label{Clustofvar} Mixed-data heatmap using the ClustOfVar approach for clustering variables.}}
+\end{center}
+\end{figure}
+
+The user can also provide previously calculated distance matrices or dendrograms (by functions \Rfunction{dist.subjects}, \Rfunction{dist.variables}, \Rfunction{dendro.subjects}, and \Rfunction{dendro.variables} from this package or anyhow).
+
+<<heat3>>=
+D.subjects <- dist.subjects(mixdata)
+dend.variables <- dendro.variables(mixdata)
+mix.heatmap(mixdata, D.subjects=D.subjects, dend.variables=dend.variables)
+@
+
+Colored bars can be added on top and to the left of the heatmap in order to provide additional information on subjects and/or variables. We give a random example, see Figure \ref{colbar}.\\
+
+\noindent
+\Rcode{> colbar <- sample(c("purple", "darkgrey"), nrow(mixdata), replace=T)}
+\noindent
+\Rcode{> mix.heatmap(mixdata, ColSideColors=colbar, legend.colbar=c("aa", "bb"), rowmar=7)}
+
+\begin{figure}[htb!]
+\begin{center}
+<<heat4, fig=TRUE, echo=F, width=10, height=6>>=
+colbar <- sample(c("purple", "darkgrey"), nrow(mixdata), replace=T)
+mix.heatmap(mixdata, ColSideColors=colbar, legend.colbar=c("aa", "bb"), rowmar=7)
+@
+\vspace{-0.4cm}
+\caption{{\small \label{colbar} Mixed-data heatmap with added column color bar.}}
+\end{center}
+\end{figure}
+
+
+%------------------------------------------------------------------------------------------------
+
+\section{Similarity Matrix Heatmap}
+
+Instead of drawing a heatmap for both samples and variables simultaneously, one can also visualize a similarity matrix for either samples or variables, see Figure \ref{distmap} for an example.\\
+
+\noindent
+\Rcode{> distmap(mixdata, what="variables", margins=c(6,6))}
+\\
+
+\begin{figure}[htb!]
+\begin{center}
+<<distmap, fig=TRUE, echo=F, width=6, height=5>>=
+distmap(mixdata, what="variables", margins=c(6,6))
+@
+\vspace{-0.4cm}
+\caption{{\small \label{distmap} Similarity matrix heatmap for variables.}}
+\end{center}
+\end{figure}
+
+Similarity matrices can also be derived before hand by \Rfunction{similarity.subjects} or \Rfunction{similarity.variables} (or anyhow), and provided to the \Rfunction{distmap} function as the \Rfunarg{data} argument.
+
+<<distmap2>>=
+S <- similarity.variables(mixdata)
+distmap(S)
+@
+
+%------------------------------------------------------------------------------------------------
+
+\section{Confounder Plot}
+
+We further propose an illustration that might be useful in regression analysis. The similarities of all variables in a dataset with two variables of special interest (i.e. predictor and outcome of a regression model) are simultaneously visualized in a scatter plot, where the x-axis shows similarities to the predictor and the y-axis similarities to the outcome, see Figure \ref{confplot} for an example. The height of the predictor variable's point indicates its association with the outcome and hence its predicting ability. Variables in the upper right part are potential confounders for which prediction model should be adjusted, or collinear variables that should be removed. Variables in the lower right part are strongly related to the predictor, but not associated with the outcome. Variables very close to the outcome variable's point are potential surrogate outcomes. Note that distances between points in the plot do not directly correspond to variable similarities. \\
+
+\noindent
+\Rcode{> confounderPlot(mixdata, x="X4.ord", y="X1.cat")}
+
+\begin{figure}[htb!]
+\begin{center}
+<<confplot, fig=TRUE, echo=F, width=7, height=5>>=
+confounderPlot(mixdata, x="X4.ord", y="X1.cat")
+@
+\vspace{-0.4cm}
+\caption{{\small \label{confplot} Similarity of each variable with 'X1.cat' (y-axis) plotted against respective similarities with 'X4.ord' (x-axis).}}
+\end{center}
+\end{figure}
+
+
+%------------------------------------------------------------------------------------------------
+
+\section{Session Information}
+
+<<sessioninfo, results=tex>>=
+toLatex(sessionInfo())
+@
+
+%------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------------------
+
+%\section{References}
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+
+%\begin{thebibliography}{}
+
+%\bibitem{Chavent12} Chavent M, Kuentz-Simonet V, Liquet B, Saracco J. ClustOfVar: An R Package for the Clustering of Variables. Journal of Statistical Software. 2012;50(13):1-16.
+
+%\bibitem{Gower71} Gower J. A general coefficient of similarity and some of its properties. Biometrics. 1971;27:857-871.
+
+%\bibitem{Hummel16} Hummel M, Kopp-Schneider A. Clustering of samples and variables with mixed-type data. Work in progress.
+
+%\bibitem{Podani99} Podani J. Extending Gower's General Coefficient of Similarity to Ordinal Characters. Taxon. 1999;48(2):331-340.
+
+%\end{thebibliography}
+
+
+\end{document}

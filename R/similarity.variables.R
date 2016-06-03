@@ -38,5 +38,5 @@ function(data, associationFun=association, check.psd=TRUE, make.psd=TRUE){
     }
   }
   
-  return(S)
+  return(as.matrix(S))
 }

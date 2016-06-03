@@ -5,11 +5,12 @@
 \description{Get dendrogram for subjects (observations) based on variables of mixed data types}
 
 \usage{
-dendro.subjects(data)
+dendro.subjects(data, weights)
 }
 
 \arguments{
   \item{data}{data frame}
+  \item{weights}{optional vector of weights for variables in \code{data}}
 }
 
 \details{Distances between subjects are based on Gower's general similarity coefficient with an extension of Podani for ordinal variables, see \code{\link[FD]{gowdis}}. In the case that all variables are quantitative, Euclidean distances are used. Then a dendrogram is derived by standard hierarchical clustering (\code{\link[stats]{hclust}} with default options).}
@@ -34,6 +35,11 @@ Podani J (1999). Extending Gower's general coefficient of similarity to ordinal 
 data(mixdata)
 
 dend <- dendro.subjects(mixdata)
+plot(dend)
+
+## example with weights
+w <- rep(1:2, each=5)
+dend <- dendro.subjects(mixdata, weights=w)
 plot(dend)
 }
 \keyword{ cluster }

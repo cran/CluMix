@@ -5,11 +5,12 @@
 \description{Get distance matrix for subjects (observations) based on variables of mixed data types}
 
 \usage{
-dist.subjects(data)
+dist.subjects(data, weights)
 }
 
 \arguments{
   \item{data}{data frame}
+  \item{weights}{optional vector of weights for variables in \code{data}}
 }
 
 \details{Distances between subjects are based on Gower's general similarity coefficient with an extension of Podani for ordinal variables, see \code{\link[FD]{gowdis}}. In the case that all variables are quantitative, Euclidean distances are used.}
@@ -28,12 +29,16 @@ Podani J (1999). Extending Gower's general coefficient of similarity to ordinal 
 %%  ~~further notes~~
 %}
 
-\seealso{\code{\link{dendro.subjects}}, \code{\link{dist.variables}}, \code{\link{mix.heatmap}}}
+\seealso{\code{\link{dendro.subjects}}, \code{\link{similarity.subjects}}, \code{\link{dist.variables}}, \code{\link{mix.heatmap}}}
 
 \examples{
 data(mixdata)
 
 D <- dist.subjects(mixdata)
+
+## example with weights
+w <- rep(1:2, each=5)
+D <- dist.subjects(mixdata, weights=w)
 }
 
 \keyword{ math }
