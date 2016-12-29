@@ -13,7 +13,7 @@ similarity.subjects(data, weights)
   \item{weights}{optional vector of weights for variables in \code{data}}
 }
 
-\details{Distances d.ij between subjects are calculated based on Gower's general similarity coefficient with an extension of Podani for ordinal variables, see \code{\link[FD]{gowdis}}. In the case that all variables are quantitative, Euclidean distances are used. Similarities s.ij are calculated as s.ij = 1 - d.ij^2.}
+\details{Distances d.ij between subjects are calculated based on Gower's general similarity coefficient with an extension of Podani for ordinal variables, see \code{\link[FD]{gowdis}}. In the case that all variables are quantitative, Euclidean distances are used. Similarities s.ij are calculated as s.ij = 1 - d.ij.}
 
 \value{Matrix of similarity values for each pair of subjects}
 

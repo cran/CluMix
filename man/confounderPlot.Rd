@@ -26,7 +26,7 @@ pch, font, xlim, ylim, ...)
 
 \details{The similarities of all variables in a dataset with two variables of special interest (i.e. predictor and outcome of a regression model) are simultaneously visualized in a scatter plot, where the x-axis shows similarities to the predictor and the y-axis similarities to the outcome. The height of the predictor variable's point indicates its association with the outcome and hence its predicting ability. Variables in the upper right part are potential confounders for which prediction model should be adjusted, or collinear variables that should be removed. Variables in the lower right part are strongly related to the predictor, but not associated with the outcome. Variables very close to the outcome variable's point are potential surrogate outcomes.}
 
-\value{Scatterplot of variable similarities. Chosen predictor and outcome variables are highlighted in bold. Categorical/quantitative variables are shown in blue/black by default.}
+\value{Scatterplot of variable similarities. Chosen predictor and outcome variables are highlighted in bold. Categorical/quantitative variables are shown in purple/black by default.}
 
 %\references{}
 

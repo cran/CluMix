@@ -7,7 +7,7 @@ importFrom(marray, maPalette)
 importFrom(FD, gowdis)
 importFrom(gplots, heatmap.2)
 importFrom(Matrix, nearPD)
-importFrom(graphics, image, layout, legend, par, plot, rect, text)
+importFrom(graphics, image, layout, legend, par, plot, polygon, rect, text)
 importFrom(stats, as.dendrogram, as.dist, complete.cases, cor, dist, hclust, kruskal.test, median, na.omit, pchisq, quantile, reorder)
 importFrom(Biobase, addVigs2WinMenu)
 

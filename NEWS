@@ -1,3 +1,22 @@
+CHANGES IN VERSION 1.3
+----------------------
+
+o With the new argument 'cont.fixed.range' in 'mix.heatmap' the user can decide to apply for all quantitative variables the same color range, i.e. variables with a smaller range compared to the overall range will not exhibit all colors given by 'col.cont'. Additionally, the maximal values corresponding to "extreme colors" can be manipulated by the new argument 'cont.range'.
+The previous and now default ('cont.fixed.range = FALSE') behaviour is that every quantitative variable is visualized independently using all colors of 'col.cont' (assuming variables of different origins with potentially completely different distributions). Argument 'cont.range' is ignored in this case.  
+
+o The legend for quantitative variables in 'mix.heatmap' now shows a color gradient. If 'cont.fixed.range = TRUE', the actual extreme values are shown, either as calculated from the data or as given by 'cont.range'.  
+
+o The package vignette is now written with knitr.
+
+o The similarity matrix for subjects is calculated in 'similarity.subjects' now as S = 1 - D instead of S = 1 - D^2, since the Gower distance in function 'gowdis' from package 'FD' is actually calculated as D = 1 - S 
+ 
+
+CHANGES IN VERSION 1.2
+----------------------
+
+o Fix bug in column/row bar legend (order of colors)  
+
+
 CHANGES IN VERSION 1.1
 ----------------------
 

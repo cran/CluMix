@@ -4,7 +4,7 @@
 heat <- function(x, cols=maPalette(low="blue", mid="lightgrey", high="red", k=50), ylab, cex=1.5){
   # prevent outlier values to dominate the color scale -> restrict "maximal colors" to 2.5% and 97.5% quantiles
   qu <- quantile(x, c(0.025, 0.975), na.rm=TRUE)
-  breaks <- seq(qu[1], qu[2], length.out=51)
+  breaks <- seq(qu[1], qu[2], length.out=length(cols)+1)
   x[x < qu[1]] <- qu[1]
   x[x > qu[2]] <- qu[2]
   
@@ -39,6 +39,7 @@ addfac <- function(x, ylab, cex=1.5){
 
 ## function to create a color legend matrix
 legendmat <- function(data, Names, col.cont=maPalette(low="blue", mid="lightgrey", high="red", k=50),
+                      cont.range=c("min", "max"),
                       lab.cex=1, col.ord=list(low="lightgreen", high="darkgreen"),
                       col.cat=c("darkorange","darkred","thistle","cornflowerblue","olivedrab","darkgrey","purple4","indianred","yellow2","darkseagreen4")){
   
@@ -59,10 +60,17 @@ legendmat <- function(data, Names, col.cont=maPalette(low="blue", mid="lightgrey
   
   # legend for quantitative variables - just show 'min' and 'max' for any of them
   if(n.cont != 0){
-    rect(.7, y-.7, 1.3, y+.2, col=col.cont[1])
-    rect(1.7, y-.7, 2.3, y+.2, col=col.cont[length(col.cont)])
+    #rect(.7, y-.7, 1.3, y+.2, col=col.cont[1])
+    #rect(1.7, y-.7, 2.3, y+.2, col=col.cont[length(col.cont)])
+    pnts <- cbind(x=c(.7, .7, 2.3, 2.3), y=c(y-.7, y+.2, y+.2, y-.7))
+    #SDMTools::legend.gradient(pnts, cols=col.cont, limits=c("min","max"))
+    xvals <- seq(min(pnts[, 1]), max(pnts[, 1]), length=length(col.cont) + 1)
+    for (i in 1:length(col.cont)) {
+      polygon(x=c(xvals[i], xvals[i], xvals[i+1], xvals[i+1]), y=pnts[,2], 
+              col=col.cont[i], border=FALSE)
+    }
     text(.5, y-1, "quantitative", font=2, pos=2, xpd=TRUE, cex=lab.cex)
-    text(c(1, 2), rep(y-1, 2), c("min","max"), cex=lab.cex)
+    text(c(.8, 2.2), rep(y-1, 2), cont.range, cex=lab.cex)
   }
   
   # ordinal variables - also only show minimal and maximal categories (because color scheme is always developed within the low' and 'high' colors)

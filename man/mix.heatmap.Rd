@@ -10,6 +10,7 @@ dist.variables.method = c("associationMeasures", "ClustOfVar"),
 associationFun = association, rowlab, rowmar = 3, lab.cex = 1.5, 
 ColSideColors, RowSideColors, 
 col.cont = marray::maPalette(low = "lightblue", high = "darkblue", k = 50), 
+cont.fixed.range = FALSE, cont.range,
 col.ord = list(low = "lightgreen", high = "darkgreen"), 
 col.cat = c("indianred1","darkred","orangered","orange","palevioletred1",
           "violetred4","red3","indianred4"), 
@@ -18,8 +19,8 @@ legend.colbar, legend.rowbar, legend.mat = FALSE, legend.cex = 1)
 
 \arguments{
   \item{data}{data frame where columns are variables (of different data types) and rows are observations (subjects, samples)}
-  \item{D.subjects}{A previously calculated distance matrix (class \code{dissimilarity} for subjects can be given. If missing, it is calculated by \code{\link{dist.subjects}}. If set to \code{NULL}, no clustering is done and original order in \code{data} will be preserved.}
-  \item{D.variables}{A previously calculated distance matrix (of class \code{dissimilarity} for variables can be given. If missing, it is calculated by \code{\link{dist.variables}}. If set to \code{NULL}, no clustering is done and original order in \code{data} will be preserved.}
+  \item{D.subjects}{A previously calculated distance matrix (class \code{dissimilarity}) for subjects can be given. If missing, it is calculated by \code{\link{dist.subjects}}. If set to \code{NULL}, no clustering is done and original order in \code{data} will be preserved.}
+  \item{D.variables}{A previously calculated distance matrix (of class \code{dissimilarity}) for variables can be given. If missing, it is calculated by \code{\link{dist.variables}}. If set to \code{NULL}, no clustering is done and original order in \code{data} will be preserved.}
   \item{dend.subjects}{A \code{dendrogram} for subjects can be given; then no distances between subjects will be calculated and \code{D.subjects} will be ignored.}
   \item{dend.variables}{A \code{dendrogram} for variables can be given; then no distances between variables will be calculated and \code{D.variables} will be ignored.}
   \item{varweights}{optional vector of variable weights, used for calculating Gower's distances between subjects}
@@ -31,15 +32,17 @@ legend.colbar, legend.rowbar, legend.mat = FALSE, legend.cex = 1)
   \item{ColSideColors}{vector of length \code{nrow(data)} specifying colors for a color bar added on top of the heatmap}
   \item{RowSideColors}{vector of length \code{ncol(data)} specifying colors for a color bar added to the left of the heatmap}
   \item{col.cont}{color palette for continuous variables; defaults to red-blue color palette}
+  \item{cont.fixed.range}{If \code{FALSE}, color range of each continuous variable is defined by respective individual variable's range. If \code{TRUE}, all continuous variables are assumed to have similar range and hence shall have the same color range; "extreme colors" then correspond to extreme values over all continuous variables and are applied to all of them equally. In any case, in order to prevent outlier values to dominate the color scale, "extreme colors" are restricted to 2.5\% and 97.5\% quantiles. Defaults to \code{FALSE}}
+  \item{cont.range}{if \code{cont.fixed.range=TRUE}, extreme value limits for coloring continuous variables can be specified;  if missing, extreme values are taken from the data; ignored if \code{cont.fixed.range=FALSE}}
   \item{col.ord}{List with names of colors for the lowest and highest categories of ordinal variables. A color palette will be created correspondingly based on the number of categories. Defaults to a green color palette}
   \item{col.cat}{vector of colors for categorical variables}
-  \item{legend.colbar}{class labels for subject groups defined by ColSideColors}
-  \item{legend.rowbar}{class labels for variable groups defined by RowSideColors}
+  \item{legend.colbar}{class labels for subject groups defined by \code{ColSideColors}}
+  \item{legend.rowbar}{class labels for variable groups defined by \code{RowSideColors}}
   \item{legend.mat}{shall legend matrix for heatmap be shown?}
   \item{legend.cex}{size of legend text}
 }
 
-\details{If no dendrograms or distance matrices are given, subjects and/or samples are clustered with methods for mixed-type data. Similarities between subjects are measured by Gower's general similarity coefficient with an extension of Podani for ordinal variables, see \code{\link[FD]{gowdis}}. Similarities between variables are assessed by combination of appropriate measures of association for different pairs of data types, see \code{\link{association}}. Then standard hierarchical clustering is applied. Alternatively, variables can also be clustered by the \code{\link{ClustOfVar}{ClustOfVar}} approach.
+\details{If no dendrograms or distance matrices are given, subjects and/or samples are clustered with methods for mixed-type data. Similarities between subjects are measured by Gower's general similarity coefficient with an extension of Podani for ordinal variables, see \code{\link[FD]{gowdis}}. Similarities between variables are assessed by combination of appropriate measures of association for different pairs of data types, see \code{\link{association}}. Then standard hierarchical clustering with complete linkage is applied. Alternatively, variables can also be clustered by the \code{\link{ClustOfVar}{ClustOfVar}} approach.
 
 Variables are shown as rows of the heatmap, samples as columns.}
 

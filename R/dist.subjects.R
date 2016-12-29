@@ -25,6 +25,7 @@ function(data, weights){
       data[,dc == "logical"] <- sapply(data[,dc == "logical"], as.numeric)
   
     D <- FD::gowdis(x=data, w=weights, ord="metric") # asym.bin=!!
+    D <- sqrt(D)  # gowdis calculates D = 1-S, but we want D = sqrt(1-S)
   }
   return(D)
 }

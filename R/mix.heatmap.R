@@ -6,6 +6,7 @@ function(data, D.subjects, D.variables, dend.subjects, dend.variables,
                         dist.variables.method=c("associationMeasures","ClustOfVar"), associationFun=association,
                         rowlab, rowmar=3, lab.cex=1.5, ColSideColors, RowSideColors,
                         col.cont=marray::maPalette(low="lightblue", high="darkblue", k=50),
+                        cont.fixed.range=FALSE, cont.range,
                         col.ord=list(low="lightgreen", high="darkgreen"),
                         col.cat=c("indianred1","darkred","orangered","orange","palevioletred1","violetred4","red3","indianred4"),
                         #col.cat=c("darkorange","darkred","thistle","cornflowerblue","olivedrab","darkgrey","purple4","indianred","yellow2","darkseagreen4"),
@@ -23,6 +24,10 @@ function(data, D.subjects, D.variables, dend.subjects, dend.variables,
 # lab.cex: size of row labels
 # ColSideColors, RowSideColors: color bars can be added on top / to the left (just one bar each)
 # col.cont: color palette for continuous variables
+# cont.fixed.range: if FALSE, color range of each continuous variable is defined by respective individual variable's range; 
+  #  if TRUE, all continuous variables are assumed to have similar range; extreme colors correspond to max/min values over all continuous variables and are applied to all of them equally
+# cont.range: if cont.fixed.range=TRUE, extreme value limits for coloring continuous variables can be specified;
+  #  if missing, extreme values are taken from the data; ignored if cont.fixed.range=FALSE
 # col.ord: list with colors for lowest and highest category of ordinal variables -> color palette will be created based on the number of categories
 # col.cat: vector of colors for categorical variables
 # legend.colbar / legend.rowbar: class labels for subject/variable groups defined by ColSideColors/RowSideColors
@@ -115,7 +120,7 @@ function(data, D.subjects, D.variables, dend.subjects, dend.variables,
   }
   
   # order rows and columns for plotting
-  data.plot <- data[o.subjects, rev(o.variables)]
+  data.plot <- data.frame(data[o.subjects, rev(o.variables)])
   if(!missing(ColSideColors)){
     names(ColSideColors) <- rownames(data)
     ColSideColors2 <- ColSideColors[o.subjects]
@@ -199,21 +204,44 @@ function(data, D.subjects, D.variables, dend.subjects, dend.variables,
     names(rowlab) <- names(data)
     rowlab <- rowlab[rev(o.variables)]
   }
+
+  # make sure all binary variables are factors
+  dc <- sapply(data.plot, function(x) 
+    ifelse(length(na.omit(unique(x))) == 2, "binary", data.class(x)))
+  data.plot[,dc == "binary"] <- lapply(data.plot[,dc == "binary"], factor)
   
+  # if continuous variables shall have same color range 
+  n.col <- length(col.cont)
+  if(cont.fixed.range){
+    if(missing(cont.range))
+      cont.range <- quantile(data.plot[, dc == "numeric"], c(0.025, 0.975), na.rm=TRUE)
+    colbins <- seq(cont.range[1], cont.range[2], length.out=n.col)
+  }
+
   # heatmap
   for(i in 1:p){
     v.i <- data.plot[,i]
-    dc <- ifelse(length(na.omit(unique(v.i))) == 2, "binary", data.class(v.i))
+    #dc <- ifelse(length(na.omit(unique(v.i))) == 2, "binary", data.class(v.i))
     #dc <- data.class(v.i)
     N <- rowlab[i]
     par(mar=c(0, 1, 0, rowmar))
     
     # continuous -> heatmap colors
-    if(dc == "numeric")
-      heat(t(as.matrix(v.i)), ylab=N, cols=col.cont, cex=lab.cex)
+    if(dc[i] == "numeric"){
+      mincol <- 1
+      maxcol <- n.col
+
+      # if color range shall be same for all cont. variables, limit col.cont w.r.t. overall extreme values
+      if(cont.fixed.range){
+        qu <- quantile(v.i, c(0.025, 0.975), na.rm=TRUE)
+        mincol <- max(which(colbins <= qu[1]), 1)
+        maxcol <- min(which(colbins > qu[2]), n.col)
+      }
+      heat(t(as.matrix(v.i)), ylab=N, cols=col.cont[mincol:maxcol], cex=lab.cex)
+    }
     
     # ordinal -> green scale colors
-    else if(dc == "ordered"){
+    else if(dc[i] == "ordered"){
       col.o <- fac2col(v.i, cols=maPalette(low=col.ord$low, high=col.ord$high, k=length(levels(v.i))))
       addfac(as.matrix(col.o), ylab=N, cex=lab.cex)
     }
@@ -234,25 +262,30 @@ function(data, D.subjects, D.variables, dend.subjects, dend.variables,
     nc <- length(unique(ColSideColors))
     nr <- length(unique(RowSideColors))
     plot(c(0,0), c(0, nc+nr), type="n", axes=FALSE, xlab="", ylab="")
-    legend(x=-.9, y=nc+nr, legend=legend.colbar, fill=unique(ColSideColors), border="black", cex=1.5, bty="n")
-    legend(x=-.9, y=nr, legend=legend.rowbar, fill=unique(RowSideColors), border="black", cex=1.5, bty="n")    
+    legend(x=-.9, y=nc+nr, legend=legend.colbar, fill=sort(unique(ColSideColors)), border="black", cex=1.5, bty="n")
+    legend(x=-.9, y=nr, legend=legend.rowbar, fill=sort(unique(RowSideColors)), border="black", cex=1.5, bty="n")    
   }
   
   else if(!missing(legend.colbar)){
     par(mar=c(0,0,0,0))
     plot(0, 0, type="n", axes=FALSE, xlab="", ylab="")
-    legend(x=-.9, y=.9, legend=legend.colbar, fill=unique(ColSideColors), border="black", cex=1.5, bty="n")
+    legend(x=-.9, y=.9, legend=legend.colbar, fill=sort(unique(ColSideColors)), border="black", cex=1.5, bty="n")
   }
 
   else if(!missing(legend.rowbar)){
     par(mar=c(0,0,0,0))
     plot(0, 0, type="n", axes=FALSE, xlab="", ylab="")
-    legend(x=-.9, y=.9, legend=legend.rowbar, fill=unique(RowSideColors), border="black", cex=1.5, bty="n")
+    legend(x=-.9, y=.9, legend=legend.rowbar, fill=sort(unique(RowSideColors)), border="black", cex=1.5, bty="n")
   }
   
   # legend matrix for heatmap
-  if(legend.mat)
-    legendmat(data.plot, Names=rowlab, col.cont, col.ord, col.cat, lab.cex=legend.cex)
+  if(legend.mat){
+    if(cont.fixed.range) 
+      cont.range <- signif(cont.range, 2)
+    else 
+      cont.range <- c("min","max")
+    legendmat(data.plot, Names=rowlab, col.cont, cont.range, col.ord, col.cat, lab.cex=legend.cex)
+  }
   
   # reset plotting parameters
   par(def.par)
