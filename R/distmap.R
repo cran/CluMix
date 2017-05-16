@@ -1,27 +1,39 @@
 distmap <-
-function(data, what=c("subjects", "variables"), varweights, reorderdend, col, ...){
+function(data, what=c("subjects", "variables"), variables.method=c("associationMeasures", "distcor"), varweights, linkage="ward.D2", reorderdend, col, ...){
 #function(data, what=c("subjects", "variables"), type=list(), col, ...){
   # !! to be done: allow also asymmetric binary variables
 
+  variables.method <- match.arg(variables.method)
+  
   # if data is original data.frame, calculate similarity matrix if missing
   if(data.class(data) == "data.frame"){
     what <- match.arg(what)
-    if(what == "subjects")
-      S <- similarity.subjects(data, weights=varweights)
+    if(what == "subjects"){
+      D <- dist.subjects(data, weights=varweights)
+      S <- as.matrix(1 - D)
+    }
     
-    else if(what == "variables")
-      S <- similarity.variables(data)
+    else if(what == "variables"){
+      S <- similarity.variables(data, method=variables.method)
+      
+      if(variables.method == "associationMeasures")
+        D <- as.dist(sqrt(1 - S))
+      else if(variables.method == "distcor")
+        D <- as.dist(1 - S)
+    }
   }
   
   # else if data is similarity matrix
-  else if(data.class(data) == "matrix" & isSymmetric(data))
+  else if(data.class(data) == "matrix" & isSymmetric(data)){
     S <- data
+    D <- as.dist(1 - S)
+  }
   
   else
     stop("'data' has to be a data.frame with the original data or a similarity matrix")
   
   # corresponding dendrogram
-  dendro <- as.dendrogram(hclust(as.dist(sqrt(1 - S))))
+  dendro <- as.dendrogram(hclust(D, method=linkage))
     
   # reorder dendrogram if wanted
   if(!missing(reorderdend))

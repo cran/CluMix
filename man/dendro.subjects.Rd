@@ -5,15 +5,16 @@
 \description{Get dendrogram for subjects (observations) based on variables of mixed data types}
 
 \usage{
-dendro.subjects(data, weights)
+dendro.subjects(data, weights, linkage="ward.D2")
 }
 
 \arguments{
   \item{data}{data frame}
   \item{weights}{optional vector of weights for variables in \code{data}}
+  \item{linkage}{agglomeration method used for hierarchical clustering; corresponds to parameter \code{method} of \code{\link[stats]{hclust}}}
 }
 
-\details{Distances between subjects are based on Gower's general similarity coefficient with an extension of Podani for ordinal variables, see \code{\link[FD]{gowdis}}. In the case that all variables are quantitative, Euclidean distances are used. Then a dendrogram is derived by standard hierarchical clustering (\code{\link[stats]{hclust}} with default options).}
+\details{Distances between subjects are based on Gower's general similarity coefficient with an extension of Podani for ordinal variables, see \code{\link[FD]{gowdis}}. In the case that all variables are quantitative, Euclidean distances are used. Then a dendrogram is derived by standard hierarchical clustering (\code{\link[stats]{hclust}} with agglomeration \code{method = "ward.D2"} by default).}
 
 \value{An object of class \code{\link[stats]{dendrogram}}}
 

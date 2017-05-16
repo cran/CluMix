@@ -1,5 +1,5 @@
 dist.subjects <-
-function(data, weights){
+function(data, weights, alwaysGower=FALSE){
 #function(data, type=list()){
 # !! to be done: allow also asymmetric binary variables
   
@@ -8,7 +8,7 @@ function(data, weights){
 
   # if all variables are numeric, use Euclidean distance
   dc <- sapply(data, data.class)
-  if(all(dc == "numeric"))
+  if(all(dc == "numeric") & !alwaysGower)
     D <- dist(data)
   
   # if not, use Gower's distance with Podani's extension
@@ -25,7 +25,7 @@ function(data, weights){
       data[,dc == "logical"] <- sapply(data[,dc == "logical"], as.numeric)
   
     D <- FD::gowdis(x=data, w=weights, ord="metric") # asym.bin=!!
-    D <- sqrt(D)  # gowdis calculates D = 1-S, but we want D = sqrt(1-S)
+    #D <- sqrt(D)  # gowdis calculates D = 1-S, but we want D = sqrt(1-S) (?)
   }
   return(D)
 }

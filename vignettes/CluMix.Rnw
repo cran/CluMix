@@ -17,7 +17,7 @@
 
 \title{CluMix: Clustering and Visualization of Mixed-Type Data}
 
-\author{Manuela Hummel \and Annette Kopp-Schneider}
+\author{Manuela Hummel \and Dominic Edelmann \and Annette Kopp-Schneider}
 \date{\today}
 
 \begin{document}
@@ -36,8 +36,7 @@ This package offers an integrative heatmap for data of mixed types to overcome t
 
 In order to create a heatmap for variables measured on different scales, special similarity measures are necessary defining i) distances between subjects (e.g. patients) based on features of different types, and ii) distances between the different variables. Similarities between subjects are measured by Gower's general similarity coefficient \cite{Gower1971} 
 with an extension of Podani \cite{Podani1999} 
-for ordinal variables. Similarities between variables are assessed by combination of appropriate measures of association for different pairs of data types \cite{Hummel2016}. Then standard hierarchical clustering with complete linkage is applied.
-Alternatively, variables can also be clustered by the 'ClustOfVar' approach \cite{Chavent2012}.
+for ordinal variables. Similarities between variables can be calculated in three ways: i) by combination of appropriate measures of association for different pairs of data types \cite{Hummel2017}, ii) based on distance correlation \cite{Hummel2017}, and iii) by the 'ClustOfVar' approach \cite{Chavent2012}. For i) and ii) standard hierarchical clustering is applied to the derived (dis)similarity matrices, with by default Ward's minimum variance method (corresponding to \Rfunarg{method = "ward.D2"} in \Rfunction{hclust}). The 'ClustOfVar' method provides its own clustering algorithm.
 %\cite{Goe:04}
 %------------------------------------------------------------------------------------------------
 
@@ -63,7 +62,7 @@ mix.heatmap(mixdata, rowmar=7, legend.mat=TRUE)
 mix.heatmap(mixdata, rowmar=7, legend.mat=TRUE)
 @
 \vspace{-0.4cm}
-\caption{{\small \label{heat1} Mixed-data heatmap using Gower's distances for clustering subjects (columns) and combination of association measures (CluMix approach) for clustering variables (rows).}}
+\caption{{\small \label{heat1} Mixed-data heatmap using Gower's distances for clustering subjects (columns) and combination of association measures for clustering variables (rows).}}
 \end{center}
 \end{figure}
 
@@ -81,32 +80,22 @@ w <- rep(1:2, each=5)
 mix.heatmap(mixdata, varweights=w, rowmar=7)
 @
 \vspace{-0.4cm}
-\caption{{\small \label{heatw} Mixed-data heatmap using weighted Gower's distances for clustering subjects (columns) and combination of association measures (CluMix approach) for clustering variables (rows).}}
+\caption{{\small \label{heatw} Mixed-data heatmap using weighted Gower's distances for clustering subjects (columns) and combination of association measures for clustering variables (rows).}}
 \end{center}
 \end{figure}
 
-To choose the 'ClustOfVar' approach for clustering variables (see Figure \ref{Clustofvar}) 
-instead of the default approach using a combination of different association measures, you can specify \Rfunarg{dist.variables.method = "ClustOfVar"}.
+The argument \Rfunarg{dist.variables.method} allows to choose the distance correlation or ClustOfVar approach for clustering variables (see Figures \ref{distcor} and \ref{ClustOfVar}).
 
-%\noindent
-%\Rcode{> mix.heatmap(mixdata, dist.variables.method="ClustOfVar", rowmar=7)}
-%\\
-
-%\begin{figure}[htb!]
-%\begin{center}
 <<heat3, eval=F, fig.width=10, fig.height=6>>=
+mix.heatmap(mixdata, dist.variables.method="distcor", rowmar=7)
 mix.heatmap(mixdata, dist.variables.method="ClustOfVar", rowmar=7)
 @
-%\vspace{-0.4cm}
-%\caption{{\small \label{Clustofvar} Mixed-data heatmap using the ClustOfVar approach for clustering variables.}}
-%\end{center}
-%\end{figure}
 
-The user can also provide previously calculated distance matrices or dendrograms (by functions \Rfunction{dist.subjects}, \Rfunction{dist.variables}, \Rfunction{dendro.subjects}, and \Rfunction{dendro.variables} from this package or anyhow). In this way, dendrograms can be manipulated, for example colored using package \Rpackage{dendextend}, and then combined with \Rfunction{mix.heatmap} (see Figure \ref{Clustofvar}).
+The user can also provide previously calculated distance matrices or dendrograms (by functions \Rfunction{dist.subjects}, \Rfunction{dist.variables}, \Rfunction{dendro.subjects}, and \Rfunction{dendro.variables} from this package or anyhow). In this way, dendrograms can be manipulated, for example colored using package \Rpackage{dendextend}, and then combined with \Rfunction{mix.heatmap} (see Figure \ref{distcor}).
 
 <<dendextend, message=FALSE>>=
 D.subjects <- dist.subjects(mixdata)
-dend.variables <- dendro.variables(mixdata, dist.variables.method="ClustOfVar")
+dend.variables <- dendro.variables(mixdata, method="distcor")
 
 require(dendextend)
 dend.variables <- dend.variables %>% set("branches_k_color", k=2, value=2:3) %>% 
@@ -123,15 +112,16 @@ mix.heatmap(mixdata, D.subjects=D.subjects, dend.variables=dend.variables, rowma
 mix.heatmap(mixdata, D.subjects=D.subjects, dend.variables=dend.variables, rowmar=7)
 @
 \vspace{-0.4cm}
-\caption{{\small \label{Clustofvar} Mixed-data heatmap using the ClustOfVar approach for clustering variables. The dendrogram is colored using functionality of package \Rpackage{dendextend} before providing it to \Rfunction{mix.heatmap}.}}
+\caption{{\small \label{distcor} Mixed-data heatmap using the distance correlation approach for clustering variables. The dendrogram is colored using functionality of package \Rpackage{dendextend} before providing it to \Rfunction{mix.heatmap}.}}
 \end{center}
 \end{figure}
 
-Colored bars can be added on top and to the left of the heatmap in order to provide additional information on subjects and/or variables. We give a random example, see Figure \ref{colbar}.
+Colored bars can be added on top and to the left of the heatmap in order to provide additional information on subjects and/or variables. We give a random example, see Figure \ref{ClustOfVar}.
 
 <<eval=F>>=
 colbar <- sample(c("purple", "darkgrey"), nrow(mixdata), replace=T)
-mix.heatmap(mixdata, ColSideColors=colbar, legend.colbar=c("aa", "bb"), rowmar=7)
+mix.heatmap(mixdata, dist.variables.method="ClustOfVar", ColSideColors=colbar, 
+            legend.colbar=c("aa", "bb"), rowmar=7)
 @
 
 \begin{figure}[htb!]
@@ -141,7 +131,7 @@ colbar <- sample(c("purple", "darkgrey"), nrow(mixdata), replace=T)
 mix.heatmap(mixdata, ColSideColors=colbar, legend.colbar=c("aa", "bb"), rowmar=7)
 @
 \vspace{-0.4cm}
-\caption{{\small \label{colbar} Mixed-data heatmap with added column color bar.}}
+\caption{{\small \label{ClustOfVar} Mixed-data heatmap using the ClustOfVar approach for clustering variables, and added (random) column color bar for sample annotation.}}
 \end{center}
 \end{figure}
 
@@ -173,6 +163,8 @@ S <- similarity.variables(mixdata)
 distmap(S)
 @
 
+In both \Rfunction{similarity.variables} and \Rfunction{distmap} the user can choose between the association measures and the distance correlation approach.
+
 %------------------------------------------------------------------------------------------------
 
 \section{Confounder Plot}
@@ -193,6 +185,7 @@ confounderPlot(mixdata, x="X4.ord", y="X1.cat")
 \end{center}
 \end{figure}
 
+The similarities used for the \Rfunction{confounderPlot} can again be derived by either the association measures or the distance correlation approach.
 
 %------------------------------------------------------------------------------------------------
 

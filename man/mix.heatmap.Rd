@@ -6,8 +6,8 @@
 
 \usage{
 mix.heatmap(data, D.subjects, D.variables, dend.subjects, dend.variables, varweights,
-dist.variables.method = c("associationMeasures", "ClustOfVar"), 
-associationFun = association, rowlab, rowmar = 3, lab.cex = 1.5, 
+dist.variables.method = c("associationMeasures", "distcor", "ClustOfVar"), 
+linkage="ward.D2", associationFun = association, rowlab, rowmar = 3, lab.cex = 1.5, 
 ColSideColors, RowSideColors, 
 col.cont = marray::maPalette(low = "lightblue", high = "darkblue", k = 50), 
 cont.fixed.range = FALSE, cont.range,
@@ -24,8 +24,9 @@ legend.colbar, legend.rowbar, legend.mat = FALSE, legend.cex = 1)
   \item{dend.subjects}{A \code{dendrogram} for subjects can be given; then no distances between subjects will be calculated and \code{D.subjects} will be ignored.}
   \item{dend.variables}{A \code{dendrogram} for variables can be given; then no distances between variables will be calculated and \code{D.variables} will be ignored.}
   \item{varweights}{optional vector of variable weights, used for calculating Gower's distances between subjects}
-  \item{dist.variables.method}{If \code{"associationMeasures"}, similarities between variables are assessed by combination of appropriate measures of association for different pairs of data types. Then a dendrogram is derived by standard hierarchical clustering (\code{\link[stats]{hclust}} with default options). If \code{"ClustOfVar"}, variables are clustered by the \code{\link{ClustOfVar}{ClustOfVar}} approach.}
-  \item{associationFun}{By default, appropriate association measures are chosen for each pair of variables, see \code{\link{association}} for details. But the user can also define a function that for any two variables calculates a similarity measure. Ignored if \code{dist.variables.method = "ClustOfVar"}}
+  \item{dist.variables.method}{If \code{"associationMeasures"}, similarities between variables are assessed by combination of appropriate measures of association for different pairs of data types. If \code{"distcor"}, distances between variables are calculated based on distance correlation. In both cases, then a dendrogram is derived by standard hierarchical clustering (\code{\link[stats]{hclust}}). If \code{"ClustOfVar"}, variables are clustered by the \code{\link{ClustOfVar}{ClustOfVar}} approach.}
+  \item{linkage}{agglomeration method used for hierarchical clustering; corresponds to parameter \code{method} of \code{\link[stats]{hclust}}}
+  \item{associationFun}{By default, appropriate association measures are chosen for each pair of variables, see \code{\link{association}} for details. But the user can also define a function that for any two variables calculates a similarity measure. Ignored if \code{dist.variables.method = "ClustOfVar"} or \code{"distcor"}}
   \item{rowlab}{row (variable) labels; if missing, column names of \code{data} are used}
   \item{rowmar}{margin for row (variable) labels}
   \item{lab.cex}{size of row (variable) labels}
@@ -42,16 +43,22 @@ legend.colbar, legend.rowbar, legend.mat = FALSE, legend.cex = 1)
   \item{legend.cex}{size of legend text}
 }
 
-\details{If no dendrograms or distance matrices are given, subjects and/or samples are clustered with methods for mixed-type data. Similarities between subjects are measured by Gower's general similarity coefficient with an extension of Podani for ordinal variables, see \code{\link[FD]{gowdis}}. Similarities between variables are assessed by combination of appropriate measures of association for different pairs of data types, see \code{\link{association}}. Then standard hierarchical clustering with complete linkage is applied. Alternatively, variables can also be clustered by the \code{\link{ClustOfVar}{ClustOfVar}} approach.
+\details{If no dendrograms or distance matrices are given, subjects and/or samples are clustered with methods for mixed-type data. Similarities between subjects are measured by Gower's general similarity coefficient with an extension of Podani for ordinal variables, see \code{\link[FD]{gowdis}}. Similarities between variables can be assessed by combination of appropriate measures of association for different pairs of data types, see \code{\link{association}}, or based on distance correlation. Then standard hierarchical clustering with by default Ward's minimum variance method is applied. Alternatively, variables can also be clustered by the \code{\link{ClustOfVar}{ClustOfVar}} approach.
 
 Variables are shown as rows of the heatmap, samples as columns.}
 
 \value{A mixed-data heatmap with dendrograms and annotation}
 
 \references{
+Hummel M, Edelmann D, Kopp-Schneider A. Clustering of samples and variables with mixed-type data. Submitted.
+
 Gower J (1971). A general coefficient of similarity and some of its properties. Biometrics, 27:857-871.
 
 Chavent M, Kuentz-Simonet V, Liquet B, Saracco J (2012). ClustOfVar: An R Package for the Clustering of Variables. Journal of Statistical Software, 50:1-16.
+
+Szekely GJ, Rizzo ML, Bakirov NK (2007). Measuring and testing dependence by correlation of distances. The Annals of Statistics, 35.6:2769-2794.
+
+Lyons R (2013). Distance covariance in metric spaces. The Annals of Probability, 41.5:3284-3305.
 }
 
 \author{Manuela Hummel, m.hummel@dkfz.de}
@@ -64,6 +71,9 @@ Chavent M, Kuentz-Simonet V, Liquet B, Saracco J (2012). ClustOfVar: An R Packag
 data(mixdata)
 
 mix.heatmap(mixdata, rowmar=7, legend.mat=TRUE)
+
+## with distance correlation
+mix.heatmap(mixdata, dist.variables.method="distcor", rowmar=7, legend.mat=TRUE)
 
 ## with (random) color bars 
 colbar <- rep(5:7, nrow(mixdata))

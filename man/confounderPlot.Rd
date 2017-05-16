@@ -5,8 +5,8 @@
 \description{Plots similarities of all variables to an outcome variable against similarities of all variables to a predictor of interest}
 
 \usage{
-confounderPlot(data, S, x, y, labels, returnS = FALSE, plotLegend = TRUE, col, 
-pch, font, xlim, ylim, ...)
+confounderPlot(data, S, x, y, labels, method = c("associationMeasures", "distcor"), 
+returnS = FALSE, plotLegend = TRUE, col, pch, font, cex.text, xlim, ylim, ...)
 }
 
 \arguments{
@@ -15,11 +15,13 @@ pch, font, xlim, ylim, ...)
   \item{x}{name of the predictor variable (as used in \code{data} and \code{S}) of main interest, for which confounders / collinearities shall be detected}
   \item{y}{name of the outcome variable (as used in \code{data} and \code{S})}
   \item{labels}{variable names used for plotting; have to be in corresponding order with columns of \code{data}; if missing, names of \code{data} are used}
+    \item{method}{method to calculate similarities: combination of association measures (\code{'associationMeasures'}) or distance correlation (\code{'distcor'})}
   \item{returnS}{shall similarity matrix be returned?}
   \item{plotLegend}{shall (default) legend be shown, indicating categorical and continuous variables}
   \item{col}{symbol and label color; by default categorical variables are shown in purple, continuous variables in black}
   \item{pch}{plotting symbol, default 16}
   \item{font}{font of plotted labels; by default names of variables \code{x} and \code{y} are shown in bold}
+  \item{cex.text}{size of plotted labels}
   \item{xlim, ylim}{axis limits}
   \item{\dots}{graphical parameters passed to \code{plot}}
 }

@@ -9,7 +9,7 @@ str(mixdata)
 
 
 ###################################################
-### code chunk number 2: CluMix.Rnw:56-57 (eval = FALSE)
+### code chunk number 2: CluMix.Rnw:55-56 (eval = FALSE)
 ###################################################
 ## mix.heatmap(mixdata, rowmar=7, legend.mat=TRUE)
 
@@ -21,7 +21,7 @@ mix.heatmap(mixdata, rowmar=7, legend.mat=TRUE)
 
 
 ###################################################
-### code chunk number 4: CluMix.Rnw:72-74 (eval = FALSE)
+### code chunk number 4: CluMix.Rnw:71-73 (eval = FALSE)
 ###################################################
 ## w <- rep(1:2, each=5)
 ## mix.heatmap(mixdata, varweights=w, rowmar=7)
@@ -37,6 +37,7 @@ mix.heatmap(mixdata, varweights=w, rowmar=7)
 ###################################################
 ### code chunk number 6: heat3 (eval = FALSE)
 ###################################################
+## mix.heatmap(mixdata, dist.variables.method="distcor", rowmar=7)
 ## mix.heatmap(mixdata, dist.variables.method="ClustOfVar", rowmar=7)
 
 
@@ -44,7 +45,7 @@ mix.heatmap(mixdata, varweights=w, rowmar=7)
 ### code chunk number 7: dendextend
 ###################################################
 D.subjects <- dist.subjects(mixdata)
-dend.variables <- dendro.variables(mixdata, dist.variables.method="ClustOfVar")
+dend.variables <- dendro.variables(mixdata, method="distcor")
 
 require(dendextend)
 dend.variables <- dend.variables %>% set("branches_k_color", k=2, value=2:3) %>% 
@@ -52,7 +53,7 @@ dend.variables <- dend.variables %>% set("branches_k_color", k=2, value=2:3) %>%
 
 
 ###################################################
-### code chunk number 8: CluMix.Rnw:116-117 (eval = FALSE)
+### code chunk number 8: CluMix.Rnw:105-106 (eval = FALSE)
 ###################################################
 ## mix.heatmap(mixdata, D.subjects=D.subjects, dend.variables=dend.variables, rowmar=7)
 
@@ -64,10 +65,11 @@ mix.heatmap(mixdata, D.subjects=D.subjects, dend.variables=dend.variables, rowma
 
 
 ###################################################
-### code chunk number 10: CluMix.Rnw:132-134 (eval = FALSE)
+### code chunk number 10: CluMix.Rnw:121-124 (eval = FALSE)
 ###################################################
 ## colbar <- sample(c("purple", "darkgrey"), nrow(mixdata), replace=T)
-## mix.heatmap(mixdata, ColSideColors=colbar, legend.colbar=c("aa", "bb"), rowmar=7)
+## mix.heatmap(mixdata, dist.variables.method="ClustOfVar", ColSideColors=colbar, 
+##             legend.colbar=c("aa", "bb"), rowmar=7)
 
 
 ###################################################
@@ -78,7 +80,7 @@ mix.heatmap(mixdata, ColSideColors=colbar, legend.colbar=c("aa", "bb"), rowmar=7
 
 
 ###################################################
-### code chunk number 12: CluMix.Rnw:155-156 (eval = FALSE)
+### code chunk number 12: CluMix.Rnw:145-146 (eval = FALSE)
 ###################################################
 ## distmap(mixdata, what="variables", margins=c(6,6))
 
@@ -97,7 +99,7 @@ distmap(mixdata, what="variables", margins=c(6,6))
 
 
 ###################################################
-### code chunk number 15: CluMix.Rnw:182-183 (eval = FALSE)
+### code chunk number 15: CluMix.Rnw:174-175 (eval = FALSE)
 ###################################################
 ## confounderPlot(mixdata, x="X4.ord", y="X1.cat")
 

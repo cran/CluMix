@@ -5,13 +5,17 @@
 \description{Calculates and visualizes a similarity matrix for subjects or variables in an image plot}
 
 \usage{
-distmap(data, what = c("subjects", "variables"), varweights, reorderdend, col, ...)
+distmap(data, what = c("subjects", "variables"), variables.method = 
+c("associationMeasures", "distcor"), varweights, linkage = "ward.D2", 
+reorderdend, col, ...)
 }
 
 \arguments{
   \item{data}{\code{data.frame} with original data or similarity \code{matrix}}
   \item{what}{Shall similarity matrix of subjects or variables be visualized?; ignored if \code{data} is a similarity matrix}
-  \item{varweights}{optional vector of variable weights, used for calculating Gower's distances between subjects; ignored if \code{what = "variables"}}
+    \item{variables.method}{method to calculate similarities if \code{what = "variables"}: combination of association measures (\code{"associationMeasures"}) or distance correlation (\code{"distcor"})}
+  \item{varweights}{optional vector of variable weights, used for calculating Gower's distances between subjects; ignored if \code{what = "associationMeasures"}}
+  \item{linkage}{agglomeration method used for hierarchical clustering; corresponds to parameter \code{method} of \code{\link[stats]{hclust}}}
   \item{reorderdend}{optional numeric values for reordering the dendrogram (maintaining the constraints on the dendrogram), see \code{wts} option of \code{\link[stats]{reorder.dendrogram}}}
   \item{col}{Color palette; defaults to blue-scale palette, where darker blue indicates higher similarity}
   \item{\dots}{graphical parameters passed to \code{\link[gplots]{heatmap.2}}}
@@ -20,7 +24,7 @@ distmap(data, what = c("subjects", "variables"), varweights, reorderdend, col, .
 \details{
 If \code{data} is a \code{data.frame}, the similarity matrix is calculated for subjects (if \code{what = "subjects"}) or variables (if \code{what = "variables"}).
 Similarities for subjects are calculated by \code{\link{similarity.subjects}}. \\
-Similarities for variables are derived by \code{\link{similarity.variables}} with the default \code{associationFun=association} function for measuring similarities between variables. 
+Similarities for variables are derived by \code{\link{similarity.variables}}. 
 Alternatively, \code{data} can also be a previously calculated similarity matrix. 
 }
 
@@ -39,12 +43,16 @@ Alternatively, \code{data} can also be a previously calculated similarity matrix
 \examples{
 data(mixdata)
 
+## subjects
 distmap(mixdata, what="subjects")
-distmap(mixdata, what="variables")
 
-## example with variable weights
+# example with variable weights
 w <- rep(1:2, each=5)
 distmap(mixdata, what="subjects", varweights=w)
+
+## variables
+distmap(mixdata, what="variables", method="association")
+distmap(mixdata, what="variables", method="distcor")
 }
 
 \keyword{ hplot }

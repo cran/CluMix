@@ -3,7 +3,7 @@ mix.heatmap <-
 # !! to be done: allow also asymmetric binary variables
 function(data, D.subjects, D.variables, dend.subjects, dend.variables,  
                         varweights,
-                        dist.variables.method=c("associationMeasures","ClustOfVar"), associationFun=association,
+                        dist.variables.method=c("associationMeasures","distcor", "ClustOfVar"), linkage="ward.D2", associationFun=association,
                         rowlab, rowmar=3, lab.cex=1.5, ColSideColors, RowSideColors,
                         col.cont=marray::maPalette(low="lightblue", high="darkblue", k=50),
                         cont.fixed.range=FALSE, cont.range,
@@ -17,7 +17,8 @@ function(data, D.subjects, D.variables, dend.subjects, dend.variables,
 # dend.subjects, dend.variables: dendrograms for subects and variables can be given;
   # then no distances will be calculated and also D.subjects/D.variables will be ignored
 # varweights: optional vector of variable weights, used for calculating Gower distances btw. subjects
-# dist.variables.method: distance can be based on 1-sqrt(associationmeasures) or ClustOfVar approach
+# dist.variables.method: distance can be based on 1-sqrt(associationmeasures) or distance correlation or ClustOfVar approach
+# linkage: agglomeration method used for hierarchical clustering
 # associationFun: function calculating association coefficients between variables (only used when dist.variables.method="associationMeasures")
 # rowlab: variable labels; if missing, colnames of data are used
 # rowmar: margin for variable labels  
@@ -54,7 +55,7 @@ function(data, D.subjects, D.variables, dend.subjects, dend.variables,
   else if(missing(D.subjects)){
     D.subjects <- dist.subjects(data, weights=varweights)
     #D.subjects <- dist.subjects(data, type=type)
-    dend.subjects <- as.dendrogram(hclust(D.subjects))
+    dend.subjects <- as.dendrogram(hclust(D.subjects, method=linkage))
     o.subjects <- labels(dend.subjects)
     plotdend.sub <- TRUE
   }
@@ -67,7 +68,7 @@ function(data, D.subjects, D.variables, dend.subjects, dend.variables,
   
   # if D.subjects is specified
   else{
-    dend.subjects <- as.dendrogram(hclust(D.subjects))
+    dend.subjects <- as.dendrogram(hclust(D.subjects, method=linkage))
     o.subjects <- labels(dend.subjects)
     plotdend.sub <- TRUE
   }
@@ -84,9 +85,9 @@ function(data, D.subjects, D.variables, dend.subjects, dend.variables,
   # if neither dendrogram nor dist matrix is given, calculate distance matrix for variables 
   else if(missing(D.variables)){
     dist.variables.method <- match.arg(dist.variables.method)
-    if(dist.variables.method == "associationMeasures"){
-      D.variables <- dist.variables(data, associationFun=associationFun)
-      dend.variables <- as.dendrogram(hclust(D.variables))
+    if(dist.variables.method == "associationMeasures" | dist.variables.method == "distcor"){
+      D.variables <- dist.variables(data, method=dist.variables.method, associationFun=associationFun)
+      dend.variables <- as.dendrogram(hclust(D.variables, method=linkage))
     }
     
     else if(dist.variables.method == "ClustOfVar"){
@@ -114,7 +115,7 @@ function(data, D.subjects, D.variables, dend.subjects, dend.variables,
   
   # if D.variables is specified
   else{
-    dend.variables <- as.dendrogram(hclust(D.variables))
+    dend.variables <- as.dendrogram(hclust(D.variables, method=linkage))
     o.variables <- labels(dend.variables)
     plotdend.var <- TRUE
   }

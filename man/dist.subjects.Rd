@@ -5,15 +5,16 @@
 \description{Get distance matrix for subjects (observations) based on variables of mixed data types}
 
 \usage{
-dist.subjects(data, weights)
+dist.subjects(data, weights, alwaysGower = FALSE)
 }
 
 \arguments{
   \item{data}{data frame}
   \item{weights}{optional vector of weights for variables in \code{data}}
+  \item{alwaysGower}{controls the way distances are calculated in case of exclusively continuous data; if \code{FALSE} (default), Euclidean distances, if \code{TRUE} Gower's distances}
 }
 
-\details{Distances between subjects are based on Gower's general similarity coefficient with an extension of Podani for ordinal variables, see \code{\link[FD]{gowdis}}. In the case that all variables are quantitative, Euclidean distances are used.}
+\details{Distances between subjects are based on Gower's general similarity coefficient with an extension of Podani for ordinal variables, see \code{\link[FD]{gowdis}}. In the case that all variables are quantitative, either Euclidean distances or still Gower's distances can be used.}
 
 \value{An object of class \code{\link[stats]{dist}}}
 

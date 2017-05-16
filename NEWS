@@ -1,3 +1,13 @@
+CHANGES IN VERSION 2.0
+----------------------
+
+o A new additional method for calculating distances between variables based on distance correlation was introduced in 'mix.heatmap', 'dist.variables', 'similarity.variables', 'dendro.variables', 'distmap', and 'confounderPlot'. 
+
+o The agglomeration method for hierarchical clustering in 'mix.heatmap', 'dendro.subjects', 'dendro.variables' and 'distmap' can now be chosen via the argument 'linkage' (equivalent to argument 'method' in 'hclust'). The default is now 'ward.D2' and not 'complete' anymore.  
+
+o Parameter 'alwaysGower' in 'dist.subjects' now allows to calculate Gower's distances even in the case of exclusively continuous data. 
+
+
 CHANGES IN VERSION 1.3
 ----------------------
 
@@ -7,8 +17,6 @@ The previous and now default ('cont.fixed.range = FALSE') behaviour is that ever
 o The legend for quantitative variables in 'mix.heatmap' now shows a color gradient. If 'cont.fixed.range = TRUE', the actual extreme values are shown, either as calculated from the data or as given by 'cont.range'.  
 
 o The package vignette is now written with knitr.
-
-o The similarity matrix for subjects is calculated in 'similarity.subjects' now as S = 1 - D instead of S = 1 - D^2, since the Gower distance in function 'gowdis' from package 'FD' is actually calculated as D = 1 - S 
  
 
 CHANGES IN VERSION 1.2

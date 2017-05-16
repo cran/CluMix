@@ -1,13 +1,18 @@
-dendro.variables <- function(data, dist.variables.method=c("associationMeasures", "ClustOfVar"), associationFun=association, check.psd=TRUE){
+dendro.variables <- function(data, method=c("associationMeasures", "distcor", "ClustOfVar"), linkage="ward.D2", associationFun=association, check.psd=TRUE){
   
-  dist.variables.method <- match.arg(dist.variables.method)
-  if(dist.variables.method == "associationMeasures"){
+  method <- match.arg(method)
+  if(method == "associationMeasures"){
     S <- similarity.variables(data, associationFun=associationFun, check.psd=check.psd)
     D.variables <- as.dist(sqrt(1 - S))
-    dend <- as.dendrogram(hclust(D.variables))
+    dend <- as.dendrogram(hclust(D.variables, method=linkage))
   }
 
-  else if(dist.variables.method == "ClustOfVar"){
+  else if(method == "distcor"){
+    D.variables <- dcor_dist_bc(data)
+    dend <- as.dendrogram(hclust(D.variables, method=linkage))
+  }
+
+  else if(method == "ClustOfVar"){
      dc <- sapply(data, data.class)
     if(any(dc == "numeric"))
       X.quanti <- data[,dc == "numeric"]
