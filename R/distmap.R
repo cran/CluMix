@@ -10,7 +10,7 @@ function(data, what=c("subjects", "variables"), variables.method=c("associationM
     what <- match.arg(what)
     if(what == "subjects"){
       D <- dist.subjects(data, weights=varweights)
-      S <- as.matrix(1 - D)
+      S <- 1 - as.matrix(D)
     }
     
     else if(what == "variables"){

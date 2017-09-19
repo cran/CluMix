@@ -29,11 +29,15 @@ Hummel M, Edelmann D, Kopp-Schneider A. Clustering of samples and variables with
 Gower J (1971). A general coefficient of similarity and some of its properties. Biometrics, 27:857-871.
 
 Chavent M, Kuentz-Simonet V, Liquet B, Saracco J (2012). ClustOfVar: An R Package for the Clustering of Variables. Journal of Statistical Software, 50:1-16.
+
+Szekely GJ, Rizzo ML, Bakirov NK (2007). Measuring and testing dependence by correlation of distances. The Annals of Statistics, 35.6:2769-2794.
+
+Lyons R (2013). Distance covariance in metric spaces. The Annals of Probability, 41.5:3284-3305.
 }
 
 \keyword{ package }
 
-\seealso{\code{\link{mix.heatmap}}, \code{\link[ClustOfVar]{ClustOfVar}} }
+\seealso{\code{\link{mix.heatmap}}}
 
 \examples{
 data(mixdata)

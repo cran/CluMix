@@ -40,7 +40,7 @@ addfac <- function(x, ylab, cex=1.5){
 ## function to create a color legend matrix
 legendmat <- function(data, Names, col.cont=maPalette(low="blue", mid="lightgrey", high="red", k=50),
                       cont.range=c("min", "max"),
-                      lab.cex=1, col.ord=list(low="lightgreen", high="darkgreen"),
+                      lab.cex=1, lab.srt=0, col.ord=list(low="lightgreen", high="darkgreen"),
                       col.cat=c("darkorange","darkred","thistle","cornflowerblue","olivedrab","darkgrey","purple4","indianred","yellow2","darkseagreen4")){
   
   dc <- sapply(data, data.class)
@@ -70,7 +70,7 @@ legendmat <- function(data, Names, col.cont=maPalette(low="blue", mid="lightgrey
               col=col.cont[i], border=FALSE)
     }
     text(.5, y-1, "quantitative", font=2, pos=2, xpd=TRUE, cex=lab.cex)
-    text(c(.8, 2.2), rep(y-1, 2), cont.range, cex=lab.cex)
+    text(c(.8, 2.2), rep(y-1, 2), cont.range, cex=lab.cex, srt=lab.srt)
   }
   
   # ordinal variables - also only show minimal and maximal categories (because color scheme is always developed within the low' and 'high' colors)
@@ -83,7 +83,7 @@ legendmat <- function(data, Names, col.cont=maPalette(low="blue", mid="lightgrey
     for(i in 1:n.ord){
       L <- levels(data[,N.cat[i]])
       text(4.7, y-i, N.cat2[i], font=2, pos=2, cex=lab.cex)
-      text(c(5,6), rep(y-i, 2), c(L[1],L[length(L)]), cex=lab.cex)
+      text(c(5,6), rep(y-i, 2), c(L[1],L[length(L)]), cex=lab.cex, srt=lab.srt)
     }
   }
   
@@ -96,7 +96,7 @@ legendmat <- function(data, Names, col.cont=maPalette(low="blue", mid="lightgrey
       L <- levels(data[,N.cat[i]])
       l <- length(L)
       text(8.7, y-i, N.cat2[i], font=2, pos=2, cex=lab.cex)
-      text(seq(9, length.out=l), rep(y-i, 2), L, cex=lab.cex)      
+      text(seq(9, length.out=l), rep(y-i, 2), L, cex=lab.cex, srt=lab.srt)      
     }
   }
 }

@@ -10,7 +10,7 @@ function(data, D.subjects, D.variables, dend.subjects, dend.variables,
                         col.ord=list(low="lightgreen", high="darkgreen"),
                         col.cat=c("indianred1","darkred","orangered","orange","palevioletred1","violetred4","red3","indianred4"),
                         #col.cat=c("darkorange","darkred","thistle","cornflowerblue","olivedrab","darkgrey","purple4","indianred","yellow2","darkseagreen4"),
-                        legend.colbar, legend.rowbar, legend.mat=FALSE, legend.cex=1){
+                        legend.colbar, legend.rowbar, legend.mat=FALSE, legend.cex=1, legend.srt=0){
 # data: data frame where columns are variables (of different data types) and rows are observations (subjects, samples)
 # D.subjects, D.variables: the already calculated distance matrices (class 'dissimilarity') for subjects and variables can be given; 
   # if missing, they will be calculated; if set to NULL, no clustering is done and original order in 'data' will be preserved
@@ -34,6 +34,7 @@ function(data, D.subjects, D.variables, dend.subjects, dend.variables,
 # legend.colbar / legend.rowbar: class labels for subject/variable groups defined by ColSideColors/RowSideColors
 # legend.mat: shall legend matrix for heatmap be shown
 # legend.cex: size of legend text
+# legend.srt: legend matrix label string rotation in degrees; i.e. legend.srt=90 produces vertical labels
   
   if(ncol(data) > 200)
     stop("the heatmap is currently only available for a maximum of 200 variables")
@@ -209,13 +210,13 @@ function(data, D.subjects, D.variables, dend.subjects, dend.variables,
   # make sure all binary variables are factors
   dc <- sapply(data.plot, function(x) 
     ifelse(length(na.omit(unique(x))) == 2, "binary", data.class(x)))
-  data.plot[,dc == "binary"] <- lapply(data.plot[,dc == "binary"], factor)
+  data.plot[,dc == "binary"] <- lapply(data.plot[,dc == "binary", drop=FALSE], factor)
   
   # if continuous variables shall have same color range 
   n.col <- length(col.cont)
   if(cont.fixed.range){
     if(missing(cont.range))
-      cont.range <- quantile(data.plot[, dc == "numeric"], c(0.025, 0.975), na.rm=TRUE)
+      cont.range <- quantile(data.plot[, dc == "numeric", drop=FALSE], c(0.025, 0.975), na.rm=TRUE)
     colbins <- seq(cont.range[1], cont.range[2], length.out=n.col)
   }
 
@@ -285,7 +286,7 @@ function(data, D.subjects, D.variables, dend.subjects, dend.variables,
       cont.range <- signif(cont.range, 2)
     else 
       cont.range <- c("min","max")
-    legendmat(data.plot, Names=rowlab, col.cont, cont.range, col.ord, col.cat, lab.cex=legend.cex)
+    legendmat(data.plot, Names=rowlab, col.cont, cont.range, col.ord, col.cat, lab.cex=legend.cex, lab.srt=legend.srt)
   }
   
   # reset plotting parameters
