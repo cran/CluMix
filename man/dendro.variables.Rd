@@ -21,7 +21,7 @@ dendro.variables(data, method = c("associationMeasures", "distcor", "ClustOfVar"
 \value{An object of class \code{\link[stats]{dendrogram}}}
 
 \references{
-Hummel M, Edelmann D, Kopp-Schneider A. Clustering of samples and variables with mixed-type data. Submitted.
+Hummel M, Edelmann D, Kopp-Schneider A (2017). Clustering of samples and variables with mixed-type data. PLOS ONE, 12(11):e0188274.
 
 Chavent M, Kuentz-Simonet V, Liquet B, Saracco J (2012). ClustOfVar: An R Package for the Clustering of Variables. Journal of Statistical Software, 50:1-16.
 }

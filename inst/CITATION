@@ -1,0 +1,30 @@
+citHeader("To cite the CluMix package in publications use:")
+
+if(!exists("meta") || is.null(meta)) meta <- packageDescription("foo")
+year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date)
+vers <- paste("R package version", meta$Version)
+
+citEntry(entry="Manual",
+    title = "CluMix: Clustering and visualization of mixed-type data ",
+    author = personList(as.person("M. Hummel"), as.person("D. Edelmann"), as.person("A. Kopp-Schneider")),
+    year = year,
+    note = vers,
+    textVersion =
+      paste("M. Hummel, D. Edelmann and A. Kopp-Schneider (",
+        year, ") CluMix ", vers, ".", sep = "")
+)
+
+citEntry(entry="Article",
+    title = "Clustering of samples and variables with mixed-type data",
+    author = personList(as.person("M. Hummel"), as.person("D. Edelmann"), as.person("A. Kopp-Schneider")),
+    journal = "PLOS ONE",
+    number = "12(11):e0188274",
+    pages = "",
+    year = 2017,
+    textVersion =
+      paste("M. Hummel, D. Edelmann and A. Kopp-Schneider (2017)",
+		"Clustering of samples and variables with mixed-type data,",
+        	"PLOS ONE, 12(11):e0188274")
+)
+
+

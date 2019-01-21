@@ -23,7 +23,14 @@ function(data, weights, alwaysGower=FALSE){
     # in case there are logical variables
     if(any(dc == "logical"))
       data[,dc == "logical"] <- sapply(data[,dc == "logical"], as.numeric)
-  
+
+    # in case there are character variables
+    if(any(dc == "character")){
+      K <- sapply(data[,dc == "character", drop=FALSE], function(x) length(unique(x)))
+      bin <- names(K)[K == 2]
+      data[,bin] <- sapply(data[,bin], function(x) as.numeric(factor(x)) - 1)
+    }
+    
     D <- FD::gowdis(x=data, w=weights, ord="metric") # asym.bin=!!
     #D <- sqrt(D)  # gowdis calculates D = 1-S, but we want D = sqrt(1-S) (?)
   }

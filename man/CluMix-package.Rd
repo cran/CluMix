@@ -24,7 +24,7 @@ Maintainer: \packageMaintainer{CluMix}
 }
 
 \references{
-Hummel M, Edelmann D, Kopp-Schneider A. Clustering of samples and variables with mixed-type data. Submitted.
+Hummel M, Edelmann D, Kopp-Schneider A (2017). Clustering of samples and variables with mixed-type data. PLOS ONE, 12(11):e0188274.
 
 Gower J (1971). A general coefficient of similarity and some of its properties. Biometrics, 27:857-871.
 

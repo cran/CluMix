@@ -1,3 +1,17 @@
+CHANGES IN VERSION 2.3
+----------------------
+
+o Removed vignette due to problems with encoding. Please refer to vignette in version 2.2
+
+
+CHANGES IN VERSION 2.2
+----------------------
+
+o Bug fix in 'dist.subjects' and 'dist.variables' regarding presence of character variables in the data 
+
+o Added CITATION
+
+
 CHANGES IN VERSION 2.1
 ----------------------
 

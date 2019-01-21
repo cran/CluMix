@@ -1,5 +1,10 @@
 ## calculate the respective association measure between two variables of arbitrary types
 association <- function(x, y){
+
+  if(data.class(x) == "character")
+    x <- factor(x)
+  if(data.class(y) == "character")
+    y <- factor(y)
   
   types <- c(data.class(x), data.class(y))
   
